@@ -5,22 +5,49 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <style>
+      body {
+        background-color: beige;
+      }
+      #app {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        gap: 5vh;
+        padding-top: 20px;
+      }
+      .total {
+        width: 1vw;
+        color: teal;
+      }
+    </style>
   </head>
   <body>
     <div id="app">
       <input v-model="first" type="number" />
+      <span>+</span>
       <input v-model="second" type="number" />
-      {{total}}
+      <span>=</span>
+      <div class="total">{{total}}</div>
     </div>
   </body>
   <script>
-    const { createApp, ref, computed } = Vue;
+    const { createApp, ref, watch, computed, onMounted } = Vue;
     createApp({
       setup() {
         const first = ref(0);
         const second = ref(0);
         const total = computed(() => {
           return first.value + second.value;
+        });
+        watch(total, (newVal) => {
+          sessionStorage.setItem("first", first.value);
+          sessionStorage.setItem("second", first.value);
+        });
+        onMounted(() => {
+          first.value = Number(sessionStorage.getItem("first"));
+          second.value = Number(sessionStorage.getItem("second"));
         });
         return {
           first,
